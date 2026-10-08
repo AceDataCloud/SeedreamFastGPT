@@ -11,7 +11,7 @@
 
 ![Ace Data Cloud 的真实应用密钥界面，密钥已遮挡](assets/get-api-key-en.png)
 
-3. 创建空白工作流：**开始 → Ace Data Cloud Seedream / Generate image → Retrieve task → 输出**。生成工具按下表填写，其余留空：
+3. 在 **Studio → Create Agent → Workflow** 新建工作流。从 **System Tools** 添加 **Ace Data Cloud Seedream / Generate image** 和 **Retrieve task**，激活两个工具并选择已配置的 **System secret**。连接 **Process starts → Generate image → Retrieve task → Basic / Assigned Reply**。生成工具按下表填写，其余留空：
 
 | 字段 | 首次运行值 |
 |---|---|
@@ -21,8 +21,16 @@
 
 **Prompt**：A single blue paper sphere on a cream background, studio product photograph, no text.
 
-4. 用 FastGPT 变量选择器将查询工具的 **Task ID** 绑定到生成工具输出的 **Task ID**。输出节点选择查询工具的 status、success、taskId、mediaUrls 和 costCredits。只执行一次；若 pending，保存 taskId，之后只运行查询工具。重跑整条生成工作流会再次提交并计费。
+4. 查询工具的 **Task ID** 选择 **Variable Reference → Generate image → Task ID**。在 **Assigned Reply** 中用变量选择器插入查询工具的 status、success、taskId、mediaUrls 和 costCredits。选择 **Save Only**，再用 **Run Preview** 执行一次。若结果为 pending，保存 taskId；之后新建 **Process starts → Retrieve task → Basic / Assigned Reply** 工作流，只填同一个 Task ID 查询。重跑生成工作流会再次提交并计费。
 5. status=succeeded 且 success=true 后打开 mediaUrls。用 taskId 在 Ace Data Cloud 请求记录核对调用与 Credits；实际套餐换算与价格以当期为准。
+
+以下 FastGPT 截图展示插件安装，以及**通过 FastGPT 只读查询此前已生成的任务**；并非新发起的 FastGPT 生成。
+
+![FastGPT 插件状态 Normal，系统密钥已配置](assets/fastgpt-installed-configured.png)
+
+![FastGPT 查询此前生成任务的工作流](assets/fastgpt-lookup-workflow.png)
+
+![FastGPT Run Preview 返回此前生成的媒体](assets/fastgpt-lookup-result.png)
 
 ## 无密钥示例
 

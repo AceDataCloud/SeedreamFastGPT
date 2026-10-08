@@ -16,7 +16,7 @@ Sign in to [Ace Data Cloud → Applications](https://platform.acedata.cloud/cons
 
 ### 3. Build the first workflow
 
-Create a blank workflow and connect **Start → Ace Data Cloud Seedream / Generate image → Ace Data Cloud Seedream / Retrieve task → Output**. Enter:
+In **Studio → Create Agent → Workflow**, start with **Process starts**. From **System Tools**, add **Ace Data Cloud Seedream / Generate image** and **Retrieve task**. Activate both tools with the configured **System secret**. Connect **Process starts → Generate image → Retrieve task → Basic / Assigned Reply**. Enter:
 
 | Generate field | First-run value |
 |---|---|
@@ -26,9 +26,17 @@ Create a blank workflow and connect **Start → Ace Data Cloud Seedream / Genera
 
 **Prompt**: A single blue paper sphere on a cream background, studio product photograph, no text.
 
-Bind **Retrieve task → Task ID** to **Generate image → Task ID** with FastGPT's variable picker. In Output, expose status, success, taskId, mediaUrls, and costCredits from Retrieve task. Run the workflow once. If status is pending, save taskId and run only Retrieve task with that same ID later. Rerunning the whole workflow submits and bills another generation.
+For **Retrieve task → Task ID**, choose **Variable Reference → Generate image → Task ID**. In **Assigned Reply**, insert the Retrieve task outputs (status, success, taskId, mediaUrls, and costCredits) with the variable picker. Choose **Save Only**, then **Run Preview** once. If status is pending, save taskId. To check later, create a separate **Process starts → Retrieve task → Basic / Assigned Reply** workflow and enter that same ID. Running the generation workflow again submits and bills another generation.
 
 When status is succeeded and success is true, open a link from mediaUrls. Match the task ID and reported Credits with Ace Data Cloud request history; pricing and your package exchange rate may change.
+
+The FastGPT screenshots below show installation and a **read-only query of a previously generated task**. They do not show a new FastGPT generation.
+
+![Installed plugin with Normal status and Configured system key](assets/fastgpt-installed-configured.png)
+
+![FastGPT workflow querying a previously generated task](assets/fastgpt-lookup-workflow.png)
+
+![Previously generated media returned in FastGPT Run Preview](assets/fastgpt-lookup-result.png)
 
 ### 4. Copyable no-key example
 
