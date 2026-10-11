@@ -73,7 +73,8 @@ export function normalizeTask(body: unknown, fallbackTaskId = ''): TaskResult {
   const hasFailure = states.some((state) => failed.has(state)) || data.success === false || response?.success === false || Boolean(data.error) || Boolean(response?.error);
   const isPending = unfinished || states.some((state) => pending.has(state));
   const hasSuccess = states.some((state) => successful.has(state)) || response?.success === true || urls.length > 0;
-  const status: TaskResult['status'] = hasFailure ? 'failed' : isPending ? 'pending' : hasSuccess ? 'succeeded' : 'pending';
+  const outerPending = (typeof data.status === 'string' && pending.has(data.status.toLowerCase())) || (typeof data.state === 'string' && pending.has(data.state.toLowerCase()));
+  const status: TaskResult['status'] = outerPending ? 'pending' : hasFailure ? 'failed' : isPending ? 'pending' : hasSuccess ? 'succeeded' : 'pending';
   const cost = obj(response?.cost) ?? obj(data.cost);
   const amount = cost?.amount;
   return {

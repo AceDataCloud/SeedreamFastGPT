@@ -56,6 +56,15 @@ test('explicit nested failure takes precedence over an unfinished timestamp', ()
   expect(task.mediaUrls).toEqual([]);
 });
 
+test('outer pending status wins over nested failure details', () => {
+  const task = normalizeTask({
+    task_id: 'task-pending-error', status: 'processing', finished_at: null,
+    response: { success: false, error: { message: 'partial failure' } }
+  });
+  expect(task.status).toBe('pending');
+  expect(task.success).toBe(false);
+});
+
 test('nested task state remains pending despite a partial media URL', () => {
   const task = normalizeTask({
     task: { id: 'task-nested', state: 'queued' },
