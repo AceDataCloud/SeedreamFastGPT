@@ -32,6 +32,8 @@
 
 ![FastGPT Run Preview 返回此前生成的媒体](assets/fastgpt-lookup-result.png)
 
+编辑时选择 **Edit image**，填入一张经授权且可访问的 HTTPS 参考图片 URL。编辑会单独提交并可能计费；把返回的 Task ID 接到同一个 **Retrieve task** 查询工具。
+
 ## 无密钥示例
 
 [examples/generate.json](examples/generate.json) 不含密钥。把真实密钥写入本地 .secrets.local.json，内容为 {"apiKey":"YOUR_OWN_KEY"}，然后运行：

@@ -14,10 +14,14 @@ export type GenerateInput = {
   watermark: boolean;
 };
 
+export type EditInput = GenerateInput & { imageUrl: string };
+
+
 const GENERATE_PATH = '/seedream/images';
 const TASK_PATH = '/seedream/tasks';
 const successful = new Set(['succeeded', 'success', 'complete', 'completed', 'finished']);
 const failed = new Set(['failed', 'failure', 'error', 'cancelled', 'canceled', 'rejected']);
+const pending = new Set(['pending', 'queued', 'processing', 'running', 'in_progress', 'accepted', 'submitted', 'waiting']);
 const mediaKeys = new Set(['url', 'image_url', 'audio_url', 'video_url', 'file_url', 'media_url']);
 
 function obj(value: unknown): Record<string, unknown> | null {
@@ -61,15 +65,15 @@ export function normalizeTask(body: unknown, fallbackTaskId = ''): TaskResult {
   const task = obj(data.task);
   const taskId = id(data.task_id) || id(data.id) || id(task?.id) || id(response?.task_id) || fallbackTaskId;
   const traceId = str(data.trace_id) || str(response?.trace_id) || str(task?.trace_id);
-  const state = (str(data.status) || str(data.state) || str(response?.status) || str(response?.state) || str(task?.status)).toLowerCase();
-  const urls = mediaUrls(response ?? data);
+  const states = [data.status, data.state, task?.status, task?.state, response?.status, response?.state]
+    .filter((value): value is string => typeof value === 'string')
+    .map((value) => value.toLowerCase());
+  const urls = [...new Set([...mediaUrls(data), ...mediaUrls(response)])];
   const unfinished = 'finished_at' in data && data.finished_at == null;
-  const status: TaskResult['status'] = unfinished
-    ? 'pending'
-    : failed.has(state) || data.success === false || response?.success === false || Boolean(data.error) || Boolean(response?.error)
-      ? 'failed'
-      : successful.has(state) || response?.success === true || urls.length > 0
-        ? 'succeeded' : 'pending';
+  const hasFailure = states.some((state) => failed.has(state)) || data.success === false || response?.success === false || Boolean(data.error) || Boolean(response?.error);
+  const isPending = unfinished || states.some((state) => pending.has(state));
+  const hasSuccess = states.some((state) => successful.has(state)) || response?.success === true || urls.length > 0;
+  const status: TaskResult['status'] = hasFailure ? 'failed' : isPending ? 'pending' : hasSuccess ? 'succeeded' : 'pending';
   const cost = obj(response?.cost) ?? obj(data.cost);
   const amount = cost?.amount;
   return {
@@ -112,6 +116,14 @@ export async function submitGeneration(input: GenerateInput, apiKey: string): Pr
   const body = await post(GENERATE_PATH, apiKey, payload);
   const result = normalizeTask(body);
   if (result.status === 'pending' && !result.taskId) throw new Error('Generation was accepted without a task ID. Check request history before retrying.');
+  return result;
+}
+
+export async function submitEdit(input: EditInput, apiKey: string): Promise<TaskResult> {
+  const payload: Record<string, unknown> = { prompt: input.prompt, model: input.model, size: input.size, watermark: input.watermark, image: input.imageUrl, async: true, stream: false, response_format: 'url' };
+  const body = await post(GENERATE_PATH, apiKey, payload);
+  const result = normalizeTask(body);
+  if (result.status === 'pending' && !result.taskId) throw new Error('Edit was accepted without a task ID. Check request history before retrying.');
   return result;
 }
 

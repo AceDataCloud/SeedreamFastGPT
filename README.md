@@ -38,6 +38,8 @@ The FastGPT screenshots below show installation and a **read-only query of a pre
 
 ![Previously generated media returned in FastGPT Run Preview](assets/fastgpt-lookup-result.png)
 
+For edits, **Edit image** accepts one authorized HTTPS reference image URL. It returns a task ID; connect that ID to the same **Retrieve task** tool. Editing is a separate billable submission.
+
 ### 4. Copyable no-key example
 
 [examples/generate.json](examples/generate.json) contains no credentials. Create a local .secrets.local.json containing {"apiKey":"YOUR_OWN_KEY"}, then:
