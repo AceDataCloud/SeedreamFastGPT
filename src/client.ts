@@ -145,8 +145,12 @@ export async function retrieveTasks(taskIds: string[], apiKey: string): Promise<
     : Array.isArray(envelope?.tasks) ? envelope.tasks
     : Array.isArray(envelope?.data) ? envelope.data
     : [];
-  const items = rawItems.map((item, index) => normalizeTask(item, taskIds[index] ?? ''));
-  const status = items.length === 0 || items.some((item) => item.status === 'pending')
+  // Batch APIs omit missing tasks; response position does not identify a task.
+  const items = rawItems.map((item) => normalizeTask(item));
+  const returnedIds = new Set(items.map((item) => item.taskId));
+  const hasAllTasks = taskIds.every((taskId) => returnedIds.has(taskId))
+    && items.every((item) => taskIds.includes(item.taskId));
+  const status = !hasAllTasks || items.length === 0 || items.some((item) => item.status === 'pending')
     ? 'pending'
     : items.some((item) => item.status === 'failed') ? 'failed' : 'succeeded';
   return {

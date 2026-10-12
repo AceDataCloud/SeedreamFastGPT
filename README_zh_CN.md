@@ -1,13 +1,13 @@
 # Ace Data Cloud Seedream 图像 for FastGPT
 
-[English guide](README.md) · [当前价格](https://platform.acedata.cloud/models)
+[English guide](README.md) · [当前价格](https://platform.acedata.cloud/models?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=seedreamfastgpt_readme_pricing)
 
-本插件提供**生成Seedream 图像**与**查询任务**两个独立工具。生成只提交一次；之后只查询原 taskId。返回 pending 或工作流显示成功，都不代表媒体文件已完成。
+本插件把生成操作与单项／批量任务查询分开。生成只提交一次；之后只查询原 taskId。返回 pending 或工作流显示成功，都不代表媒体文件已完成。
 
 ## 从零开始
 
 1. 使用 FastGPT 4.15 或更新版本。上架后在插件市场搜索 **Ace Data Cloud Seedream**，核对作者是 **Ace Data Cloud**。上架前，企业版或自部署管理员可构建并上传本仓库的 .pkg；FastGPT 云服务目前不支持用户直接上传自定义插件。
-2. 登录 [Ace Data Cloud 应用管理](https://platform.acedata.cloud/console/applications)，打开 **General Application**，确认 Seedream 权限、余额和当期价格。点击下图 **1** 复制密钥，或选择 **2 Manage Keys → Create** 新建 FastGPT 专用密钥。若开启 Allowed APIs，同时允许 /seedream/images and /seedream/tasks。在 FastGPT 插件配置的 **Ace Data Cloud API key** 只填令牌本身，不加 Bearer 或引号。
+2. 登录 [Ace Data Cloud 应用管理](https://platform.acedata.cloud/console/applications?utm_source=opensource&utm_medium=referral&utm_campaign=evergreen&utm_content=seedreamfastgpt_readme_api_key)，打开 **General Application**，确认 Seedream 权限、余额和当期价格。点击下图 **1** 复制密钥，或选择 **2 Manage Keys → Create** 新建 FastGPT 专用密钥。若开启 Allowed APIs，同时允许 /seedream/images and /seedream/tasks。在 FastGPT 插件配置的 **Ace Data Cloud API key** 只填令牌本身，不加 Bearer 或引号。
 
 ![Ace Data Cloud 的真实应用密钥界面，密钥已遮挡](assets/get-api-key-en.png)
 
@@ -35,6 +35,8 @@
 编辑时选择 **Edit image**，填入一张经授权且可访问的 HTTPS 参考图片 URL。编辑会单独提交并可能计费；把返回的 Task ID 接到同一个 **Retrieve task** 查询工具。
 
 多个已有任务可用 **Retrieve tasks** 输入 1–20 个 Task ID，一次只读查询。逐项检查状态；只有全部成功时批次才算成功。此工具不会提交新生成。
+
+如果有请求的任务未返回，或返回的任务 ID 无法对应，批量结果会保持待完成。请核对已有任务 ID，不要重新提交生成。
 
 ## 无密钥示例
 

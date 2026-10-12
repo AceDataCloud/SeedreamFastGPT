@@ -95,7 +95,7 @@ const batchHandler = createToolHandler({
 export default defineToolSet({
   manifest: {
     pluginId: 'acedataSeedream',
-    version: '0.2.0',
+    version: '0.2.1',
     name: { en: 'Ace Data Cloud Seedream', 'zh-CN': 'Ace Data Cloud Seedream 图像' },
     description: {
       en: 'Generate image with Seedream through Ace Data Cloud and retrieve the same task.',
