@@ -132,3 +132,28 @@ export async function retrieveTask(taskId: string, apiKey: string): Promise<Task
   const body = await post(TASK_PATH, apiKey, { action: 'retrieve', id: taskId });
   return normalizeTask(body, taskId);
 }
+
+export async function retrieveTasks(taskIds: string[], apiKey: string): Promise<{ status: 'pending' | 'succeeded' | 'failed'; success: boolean; taskIds: string[]; mediaUrls: string[]; items: TaskResult[] }> {
+  if (taskIds.length === 0 || taskIds.length > 20 || taskIds.some((taskId) => !taskId.trim())) {
+    throw new Error('Provide 1 to 20 existing task IDs.');
+  }
+  const body = await post(TASK_PATH, apiKey, { action: 'retrieve_batch', ids: taskIds });
+  const envelope = obj(body);
+  const rawItems = Array.isArray(body)
+    ? body
+    : Array.isArray(envelope?.items) ? envelope.items
+    : Array.isArray(envelope?.tasks) ? envelope.tasks
+    : Array.isArray(envelope?.data) ? envelope.data
+    : [];
+  const items = rawItems.map((item, index) => normalizeTask(item, taskIds[index] ?? ''));
+  const status = items.length === 0 || items.some((item) => item.status === 'pending')
+    ? 'pending'
+    : items.some((item) => item.status === 'failed') ? 'failed' : 'succeeded';
+  return {
+    status,
+    success: status === 'succeeded',
+    taskIds,
+    mediaUrls: status === 'succeeded' ? [...new Set(items.flatMap((item) => item.mediaUrls))] : [],
+    items
+  };
+}

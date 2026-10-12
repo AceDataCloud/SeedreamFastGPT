@@ -34,6 +34,8 @@
 
 编辑时选择 **Edit image**，填入一张经授权且可访问的 HTTPS 参考图片 URL。编辑会单独提交并可能计费；把返回的 Task ID 接到同一个 **Retrieve task** 查询工具。
 
+多个已有任务可用 **Retrieve tasks** 输入 1–20 个 Task ID，一次只读查询。逐项检查状态；只有全部成功时批次才算成功。此工具不会提交新生成。
+
 ## 无密钥示例
 
 [examples/generate.json](examples/generate.json) 不含密钥。把真实密钥写入本地 .secrets.local.json，内容为 {"apiKey":"YOUR_OWN_KEY"}，然后运行：

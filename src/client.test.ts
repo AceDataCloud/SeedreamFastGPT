@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest';
-import { normalizeTask, retrieveTask, submitEdit, submitGeneration } from './client.js';
+import { normalizeTask, retrieveTask, submitEdit, submitGeneration, retrieveTasks } from './client.js';
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -91,4 +91,19 @@ test('edit submits once to the fixed service endpoint', async () => {
   expect(fetch).toHaveBeenCalledTimes(1);
   expect(fetch.mock.calls[0][0]).toBe('https://api.acedata.cloud/seedream/images');
   expect(JSON.parse(fetch.mock.calls[0][1].body)).toMatchObject({ image: 'https://cdn.example/source.png', async: true, stream: false, response_format: 'url' });
+});
+
+test('batch retrieval sends one read-only query and keeps per-task status', async () => {
+  const fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ items: [
+    { id: 'task-1', finished_at: 123, response: { success: true, data: [{ url: 'https://cdn.example/final.png' }] } },
+    { id: 'task-2', status: 'processing', finished_at: null }
+  ] }), { status: 200 }));
+  vi.stubGlobal('fetch', fetch);
+  const result = await retrieveTasks(['task-1', 'task-2'], 'test-key');
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(fetch.mock.calls[0][0]).toBe('https://api.acedata.cloud/seedream/tasks');
+  expect(JSON.parse(fetch.mock.calls[0][1].body)).toEqual({ action: 'retrieve_batch', ids: ['task-1', 'task-2'] });
+  expect(result).toMatchObject({ status: 'pending', success: false, taskIds: ['task-1', 'task-2'] });
+  expect(result.items.map((item) => item.status)).toEqual(['succeeded', 'pending']);
+  expect(result.mediaUrls).toEqual([]);
 });
