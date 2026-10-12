@@ -1,0 +1,28 @@
+{
+  "name": "fastgpt-plugin-acedata-seedream",
+  "version": "0.2.1",
+  "description": "Ace Data Cloud Seedream tools for FastGPT",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "fastgpt-plugin build --minify",
+    "check": "fastgpt-plugin check --entry . --output ./dist",
+    "pack": "fastgpt-plugin pack",
+    "test": "vitest run",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@fastgpt-plugin/cli": "0.2.0",
+    "@fastgpt-plugin/sdk-factory": "0.0.1",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18",
+    "zod": "4.3.6"
+  },
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  },
+  "packageManager": "pnpm@10.28.2",
+  "license": "Apache-2.0"
+}
