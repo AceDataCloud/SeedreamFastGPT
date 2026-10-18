@@ -1,0 +1,10 @@
+node_modules/
+dist/
+out/
+*.pkg
+*.tgz
+.fastgpt-plugin-debug/
+.secrets.local.json
+*.local.json
+.env*
+coverage/
