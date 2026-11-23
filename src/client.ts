@@ -111,7 +111,6 @@ export async function submitGeneration(input: GenerateInput, apiKey: string): Pr
     size: input.size,
     watermark: input.watermark,
     async: true,
-    stream: false,
     response_format: 'url',
   };
   const body = await post(GENERATE_PATH, apiKey, payload);
@@ -121,7 +120,7 @@ export async function submitGeneration(input: GenerateInput, apiKey: string): Pr
 }
 
 export async function submitEdit(input: EditInput, apiKey: string): Promise<TaskResult> {
-  const payload: Record<string, unknown> = { prompt: input.prompt, model: input.model, size: input.size, watermark: input.watermark, image: input.imageUrl, async: true, stream: false, response_format: 'url' };
+  const payload: Record<string, unknown> = { prompt: input.prompt, model: input.model, size: input.size, watermark: input.watermark, image: input.imageUrl, async: true, response_format: 'url' };
   const body = await post(GENERATE_PATH, apiKey, payload);
   const result = normalizeTask(body);
   if (result.status === 'pending' && !result.taskId) throw new Error('Edit was accepted without a task ID. Check request history before retrying.');
