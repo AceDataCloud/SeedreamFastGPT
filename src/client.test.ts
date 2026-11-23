@@ -90,7 +90,7 @@ test('edit submits once to the fixed service endpoint', async () => {
   expect(result).toMatchObject({ taskId: 'edit-task', status: 'pending', success: false });
   expect(fetch).toHaveBeenCalledTimes(1);
   expect(fetch.mock.calls[0][0]).toBe('https://api.acedata.cloud/seedream/images');
-  expect(JSON.parse(fetch.mock.calls[0][1].body)).toMatchObject({ image: 'https://cdn.example/source.png', async: true, stream: false, response_format: 'url' });
+  expect(JSON.parse(fetch.mock.calls[0][1].body)).toMatchObject({ image: 'https://cdn.example/source.png', async: true, response_format: 'url' });
 });
 
 test('batch retrieval sends one read-only query and keeps per-task status', async () => {

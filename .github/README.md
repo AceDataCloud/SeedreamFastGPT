@@ -4,6 +4,8 @@
 
 Generate image and retrieve the result in a FastGPT workflow. [简体中文](README_zh_CN.md) · [Current pricing](https://platform.acedata.cloud/models?utm_source=github&utm_medium=referral&utm_campaign=evergreen&utm_content=seedreamfastgpt_readme_pricing)
 
+Seedream 5.0 Pro forbids the `stream` field, including `false`. Generation and editing omit it and keep asynchronous submission plus task retrieval. Lite and 4.x already default to non-streaming responses; model IDs, size defaults and existing tool IDs remain unchanged.
+
 ## Quick start
 
 ### 1. Install
